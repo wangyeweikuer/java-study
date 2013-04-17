@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wangye.crystal.commons.model.entity.Author">
+<!-- 	<parameterMap type="" id="">
+		<parameter property="" javaType="" jdbcType="" mode="IN" resultMap="" scale="" typeHandler="" />
+		<parameter property="" javaType="" jdbcType="" mode="IN" resultMap="" scale="" typeHandler="" />
+	</parameterMap> -->
+	<!-- <resultMap type="" id="1" autoMapping="true" extends="">
+		<association property="" column="" columnPrefix="" javaType=""></association>
+		<collection property="" column="" javaType="" columnPrefix="" jdbcType="" notNullColumn="" ofType="" resultMap="" select=""
+			typeHandler="">
+		</collection>
+		<constructor> 
+			<arg select="" />
+			<arg />
+		</constructor>
+		<discriminator column="" jdbcType="" typeHandler="" javaType=""> <case value="" resultMap="" resultType=""> </case> </discriminator>
+		<id column="" javaType="" jdbcType="" property="" typeHandler="" />
+		<result column="" javaType="" jdbcType="" property="" typeHandler="" />
+	</resultMap> -->
+<!-- 	<cache eviction="" flushInterval="" readOnly="" size="" type="">
+		<property name="" value="" />
+	</cache>
+	<cache-ref namespace="" /> -->
+	<select id="getByName" parameterType="java.lang.String" resultType="org.wangye.crystal.commons.model.entity.Author">
+		select * from author
+		where name = #{value}
+	</select>
+</mapper>

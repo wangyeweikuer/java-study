@@ -1,0 +1,18 @@
+insert into book(
+	gmt_create,
+	gmt_modify,
+	file_type,
+	filepath,
+	name
+)values
+#foreach($b in ${bookList})
+#if($velocityCount != 1)
+,
+#end
+(	now(),
+	now(),
+	'${b.fileType}',
+	'${b.filepath}',
+	'${b.name}'
+)
+#end

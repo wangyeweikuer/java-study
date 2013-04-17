@@ -1,0 +1,4 @@
+select id 
+from   book 
+where  filepath = '${path}' 
+limit 1;

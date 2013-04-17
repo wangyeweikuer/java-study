@@ -1,0 +1,15 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href='../../css/book.css' rel='stylesheet' type='text/css'>
+<link href='../../css/common/autosuggest_inquisitor.css' type="text/css" rel="Stylesheet" media="all"/>
+<script src="../../js/common/jquery-1.7.2.js" type="text/javascript"></script>
+</head>
+<body>
+	<ul>
+		#foreach($b in ${bookList})
+		<li>${b.name}</li>
+		#end
+	</ul>
+</body>
+</html>

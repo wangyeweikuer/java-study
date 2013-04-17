@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd"
+	default-autowire="no" default-lazy-init="true">
+	<context:property-placeholder file-encoding="utf8" location="classpath:*.properties" />
+	<util:properties id="file" location="classpath:file.properties" />
+	<util:properties id="velocity" location="classpath:velocity.properties" />
+	<!-- <util:list id="testList" list-class="java.util.ArrayList" value-type="java.lang.String"> <value>111</value> <value>222</value> </util:list> -->
+	<bean id="testList" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<value>111</value>
+				<value>222</value>
+			</list>
+		</constructor-arg>
+	</bean>
+	<util:map id="testMap" map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String">
+		<entry key="www" value="wwww" />
+		<entry key="yyy" value="yyyy" />
+		<entry key="zzz" value="zzzz" />
+	</util:map>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="connectionInitSqls">
+			<list>
+				<value>select now();</value>
+			</list>
+		</property>
+		<property name="url" value="${jdbc.url}" />
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="username" value="${jdbc.username}" />
+	</bean>
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<aop:config>
+		<aop:pointcut id="Services" expression="(execution(* org.wangye.bookstores.service.*.*(..)) )" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="Services" />
+	</aop:config>
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="can*" read-only="true" />
+			<tx:method name="*" read-only="false" propagation="REQUIRED" isolation="DEFAULT" />
+		</tx:attributes>
+	</tx:advice>
+	<!-- 这样可以支持annotation的事务配置了 added by wangye -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="velocityEngine" class="org.wangye.bookstores.commons.VelocityEngine">
+		<constructor-arg ref="velocity" />
+		<property name="encoding" value="UTF-8" />
+		<property name="rootDirPath" value="velocity" />
+	</bean>
+
+	<bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+		<property name="velocityProperties">
+			<props>
+				<prop key="resource.loader">file</prop>
+				<prop key="file.resource.loader.class">
+					org.apache.velocity.runtime.resource.loader.FileResourceLoader
+				</prop>
+				<prop key="file.resource.loader.path">${webapp.root}/WEB-INF/vm</prop>
+				<prop key="file.resource.loader.cache">false</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+		<property name="cache" value="true" />
+		<property name="prefix" value="" />
+		<property name="suffix" value=".vm" />
+	</bean>
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="annotationMethodHandlerAdapter" class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<value>application/json;charset</value>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<context:component-scan base-package="org.wangye.bookstores.controller" />
+	<context:component-scan base-package="org.wangye.bookstores.service" />
+	<context:component-scan base-package="org.wangye.bookstores.dao" />
+
+	<bean id="environment" class="org.apache.ibatis.mapping.Environment">
+		<constructor-arg name="id" value="e1" />
+		<constructor-arg name="transactionFactory">
+			<bean class="org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory" />
+		</constructor-arg>
+		<constructor-arg name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="builder" class="org.wangye.bookstores.dao.FactoryBuilder">
+		<constructor-arg name="configClassPath" value="mybatis/Config.xml" />
+		<constructor-arg name="environment" ref="environment" />
+	</bean>
+</beans>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wangye.crystal.commons.dao.BookDao">
+<!-- 如果这里用作namespace的是接口，则自动会被代理生成一个Mapper类，其中@select等方法会自动生成一个sql -->
+
+</mapper>

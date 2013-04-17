@@ -1,0 +1,8 @@
+select  id,
+		gmt_create as "gmtCreate",
+		gmt_modify as "gmtModify",
+		filepath as "filepath",
+		file_type as "fileType",
+		name
+from   book 
+where  filepath = '${path}' 

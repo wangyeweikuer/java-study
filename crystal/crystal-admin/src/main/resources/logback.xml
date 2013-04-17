@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!--定义properties -->
+	<property name="logDirPath" value="/home/wangye04/study/logs/" />
+	<property name="logFilePath" value="${logDirPath}/bookstores.log" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d [%thread] %-5level %logger{35} - %msg %n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- 日志文件 appender定义 -->
+	<appender name="infoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${logFilePath}</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<FileNamePattern>${logFilePath}.%i.bak
+			</FileNamePattern>
+			<MinIndex>1</MinIndex>
+			<MaxIndex>13</MaxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>50MB</MaxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%d [%thread] %-5level %logger{36} %line - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- logger入口 -->
+	<logger name="org.wangye" additivity="true">
+		<level value="INFO" />
+		<appender-ref ref="infoAppender" />
+	</logger>
+	<root>
+		<level value="ERROR" />
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
